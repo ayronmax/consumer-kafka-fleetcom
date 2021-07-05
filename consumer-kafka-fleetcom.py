@@ -304,13 +304,13 @@ schema_str = """
 }
 """
 
-sr_conf = {'url': 'http://10.0.2.126:38081'}
+sr_conf = {'url': 'http://189.2.113.196:38081'}
 schema_registry_client = SchemaRegistryClient(sr_conf)
 
 avro_deserializer = AvroDeserializer(schema_registry_client, schema_str, dict_to_tab)
 string_deserializer = StringDeserializer('utf_8')
 
-consumer_conf = {'bootstrap.servers': '10.0.2.126:19091,10.0.2.126:29092,10.0.2.126:39093',
+consumer_conf = {'bootstrap.servers': '189.2.113.196:19091,189.2.113.196:29092,189.2.113.196:39093',
                  'key.deserializer': string_deserializer,
                  'value.deserializer': avro_deserializer,
                  'group.id': 'fleetcom-2792',
@@ -326,6 +326,7 @@ while True:
         msg = consumer.poll(1)
 
         if msg is None:
+            print("sem dados")
             continue
         elif msg.error():
             logger.error('error: {}'.format(msg.error()))
@@ -334,8 +335,8 @@ while True:
             if tab is not None:
                 __USER_DBMAKER = "SYSADM"
                 __PASS_DBMAKER = "K5GhnHEr"
-                __DB = 'DBCONTROL_2792_001'
-                TABLE_OWNER, TABLE1, TABLE2 = 'DBCONTROL2792001', 'RECPGM01', 'RECPGB01'
+                __DB = 'DBCONTROL_6506_006'
+                TABLE_OWNER, TABLE1, TABLE2 = 'DBCONTROL6506006', 'RECPGM06', 'RECPGB06'
 
                 sql = f"select * from {TABLE_OWNER}.{TABLE1} where PGMOVMOV_CGC = {tab.PGMOVMOV_CGC} and PGMOVMOV_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
                 
@@ -380,105 +381,108 @@ while True:
                 sql_insert_or_update_1 = ""
                 sql_insert_or_update_2 = ""
 
+                cast_tipo = lambda x: x if type(x) == int or type(x) == float else f"'{x}'" 
+
                 if not cond1:
                     continue
                 elif not cond2:
-                    cast_tipo = lambda x: x if type(x) == int or type(x) == float else f"'{x}'"
                     sql_insert_or_update_1 = f"UPDATE {TABLE_OWNER}.{TABLE1} SET PGMOVMOV_PARF_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_PARF)}, PGMOVMOV_CPAR_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_CPAR)}, PGMOVMOV_CCUSTO_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_CCUSTO)}, PGMOVMOV_TPOD_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_TPOD)}, PGMOVMOV_VLTAB_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_VLTAB)} WHERE PGMOVMOV_CGC={cast_tipo(tab.PGMOVMOV_CGC)} and PGMOVMOV_NDUPL={cast_tipo(tab.PGMOVMOV_NDUPL)}"
                 elif cond3: 
                     convert_time = lambda x: int(datetime.datetime.timestamp(x))
-                    cast_tipo = lambda x: x if type(x) == int or type(x) == float else f"'{x}'" 
 
                     sql_insert_or_update_1 = f"INSERT INTO {TABLE_OWNER}.{TABLE1} (PGMOVMOV_CGC, PGMOVMOV_NDUPL, PGMOVMOV_TPLANC, PGMOVMOV_DTE, PGMOVMOV_DTEM, PGMOVMOV_DTV, PGMOVMOV_DTN, PGMOVMOV_VALOR, PGMOVMOV_VALORI, PGMOVMOV_PROJ, PGMOVMOV_IND, PGMOVMOV_VALIND, PGMOVMOV_VALORP, PGMOVMOV_VALORN, PGMOVMOV_TXJURD, PGMOVMOV_VLJURD, PGMOVMOV_MORA, PGMOVMOV_VLMORA, PGMOVMOV_TXDESC, PGMOVMOV_VLDESC, PGMOVMOV_DIASD, PGMOVMOV_BCOE, PGMOVMOV_AGE, PGMOVMOV_BCOC, PGMOVMOV_AGC, PGMOVMOV_NUMCH, PGMOVMOV_TARJA, PGMOVMOV_TARJAN, PGMOVMOV_INT_CONT, PGMOVMOV_INT_BAIXA, PGMOVMOV_NNRO, PGMOVMOV_NREF, PGMOVMOV_TPMOV_CNAB, PGMOVMOV_OBS, PGMOVMOV_TPFOR, PGMOVMOV_SITPG, PGMOVMOV_TPOP, PGMOVMOV_MOD, PGMOVMOV_RC, PGMOVMOV_FLPRO, PGMOVMOV_CLASSE_VALOR, PGMOVMOV_PARF_{tab.ITEM_RATEIO}, PGMOVMOV_CPAR_{tab.ITEM_RATEIO}, PGMOVMOV_CCUSTO_{tab.ITEM_RATEIO}, PGMOVMOV_TPOD_{tab.ITEM_RATEIO}, PGMOVMOV_VLTAB_{tab.ITEM_RATEIO}, PGMOVMOV_USU, PGMOVMOV_TIME, PGMOVMOV_DTS) VALUES ({cast_tipo(tab.PGMOVMOV_CGC)}, {cast_tipo(tab.PGMOVMOV_NDUPL)}, {cast_tipo(tab.PGMOVMOV_TPLANC)}, {cast_tipo(tab.PGMOVMOV_DTE)}, {cast_tipo(tab.PGMOVMOV_DTEM)}, {cast_tipo(tab.PGMOVMOV_DTV)}, {cast_tipo(tab.PGMOVMOV_DTN)}, {cast_tipo(tab.PGMOVMOV_VALOR)}, {cast_tipo(tab.PGMOVMOV_VALORI)}, {cast_tipo(tab.PGMOVMOV_PROJ)}, {cast_tipo(tab.PGMOVMOV_IND)}, {cast_tipo(tab.PGMOVMOV_VALIND)}, {cast_tipo(tab.PGMOVMOV_VALORP)}, {cast_tipo(tab.PGMOVMOV_VALORN)}, {cast_tipo(tab.PGMOVMOV_TXJURD)}, {cast_tipo(tab.PGMOVMOV_VLJURD)}, {cast_tipo(tab.PGMOVMOV_MORA)}, {cast_tipo(tab.PGMOVMOV_VLMORA)}, {cast_tipo(tab.PGMOVMOV_TXDESC)}, {cast_tipo(tab.PGMOVMOV_VLDESC)}, {cast_tipo(tab.PGMOVMOV_DIASD)}, {cast_tipo(tab.PGMOVMOV_BCOE)}, {cast_tipo(tab.PGMOVMOV_AGE)}, {cast_tipo(tab.PGMOVMOV_BCOC)}, {cast_tipo(tab.PGMOVMOV_AGC)}, {cast_tipo(tab.PGMOVMOV_NUMCH)}, {cast_tipo(tab.PGMOVMOV_TARJA)}, {cast_tipo(tab.PGMOVMOV_TARJAN)}, {cast_tipo(tab.PGMOVMOV_INT_CONT)}, {cast_tipo(tab.PGMOVMOV_INT_BAIXA)}, {cast_tipo(tab.PGMOVMOV_NNRO)}, {cast_tipo(tab.PGMOVMOV_NREF)}, {cast_tipo(tab.PGMOVMOV_TPMOV_CNAB)}, {cast_tipo(tab.PGMOVMOV_OBS)}, {cast_tipo(tab.PGMOVMOV_TPFOR)}, {cast_tipo(tab.PGMOVMOV_SITPG)}, {cast_tipo(tab.PGMOVMOV_TPOP)}, {cast_tipo(tab.PGMOVMOV_MOD)}, {cast_tipo(tab.PGMOVMOV_RC)}, {cast_tipo(tab.PGMOVMOV_FLPRO)}, {cast_tipo(tab.PGMOVMOV_CLASSE_VALOR)}, {cast_tipo(tab.PGMOVMOV_PARF)}, {cast_tipo(tab.PGMOVMOV_CPAR)}, {cast_tipo(tab.PGMOVMOV_CCUSTO)}, {cast_tipo(tab.PGMOVMOV_TPOD)}, {cast_tipo(tab.PGMOVMOV_VLTAB)}, {cast_tipo(tab.PGMOVMOV_USU)}, {cast_tipo(tab.PGMOVMOV_TIME)}, {cast_tipo(tab.PGMOVMOV_DTS)})"
                 
                 sql_insert_or_update_1=replece_none(sql_insert_or_update_1)
                 
-                if sql_insert_or_update_1 == "":
-                    continue
-                
-                try:
-                    con = conexao_dbmaker(10, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
+                if sql_insert_or_update_1 != "":
+                  try:
+                      con = conexao_dbmaker(10, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
 
-                    try: 
-                        con.executar(sql_insert_or_update_1)                                           
-                        con.efetivar()
-                    except:
-                        exc_type, exc_value, _ = sys.exc_info()
-                        logger.error(f"ERROR {exc_type} {exc_value}")
-                        logger.error(f"SQL| {sql_insert_or_update_1}")    
-                        con.rollback()
-                        logger.error("Erro ao adicionar os valores de chave: {} |PGMOVMOV_CGC: {} |PGMOVMOV_NDUPL: {} |PGMOVMOV_TPLANC: {} |PGMOVMOV_DTE: {} |PGMOVMOV_DTEM: {} |PGMOVMOV_DTV: {} |PGMOVMOV_DTN: {} |PGMOVMOV_VALOR: {} |PGMOVMOV_VALORI: {} |PGMOVMOV_PROJ: {} |PGMOVMOV_IND: {} |PGMOVMOV_VALIND: {} |PGMOVMOV_VALORP: {} |PGMOVMOV_VALORN: {} |PGMOVMOV_TXJURD: {} |PGMOVMOV_VLJURD: {} |PGMOVMOV_MORA: {} |PGMOVMOV_VLMORA: {} |PGMOVMOV_TXDESC: {} |PGMOVMOV_VLDESC: {} |PGMOVMOV_DIASD: {} |PGMOVMOV_BCOE: {} |PGMOVMOV_AGE: {} |PGMOVMOV_BCOC: {} |PGMOVMOV_AGC: {} |PGMOVMOV_NUMCH: {} |PGMOVMOV_TARJA: {} |PGMOVMOV_TARJAN: {} |PGMOVMOV_INT_CONT: {} |PGMOVMOV_INT_BAIXA: {} |F3: {} |PGMOVMOV_NNRO: {} |PGMOVMOV_NREF: {} |PGMOVMOV_TPMOV_CNAB: {} |F4: {} |PGMOVMOV_OBS: {} |PGMOVMOV_TPFOR: {} |PGMOVMOV_SITPG: {} |PGMOVMOV_TPOP: {} |PGMOVMOV_MOD: {} |PGMOVMOV_RC: {} |PGMOVMOV_FLPRO: {} |PGMOVMOV_EXEC_C14: {} |PGMOVMOV_CLASSE_VALOR: {} |F5: {} |CHAVE_NF: {} |ITEM_PARF: {} |PGMOVMOV_PARF: {} |PGMOVMOV_CPAR: {} |PGMOVMOV_CCUSTO: {} |PGMOVMOV_TPOD: {} |PGMOVMOV_VLTAB: {} |PGMOVMOV_DTINC: {} |PGMOVMOV_DTUALT: {} "
-                            .format(tab.CHAVE, tab.PGMOVMOV_CGC, tab.PGMOVMOV_NDUPL, tab.PGMOVMOV_TPLANC, tab.PGMOVMOV_DTE, tab.PGMOVMOV_DTEM,
-                                tab.PGMOVMOV_DTV, tab.PGMOVMOV_DTN, tab.PGMOVMOV_VALOR, tab.PGMOVMOV_VALORI, tab.PGMOVMOV_PROJ, tab.PGMOVMOV_IND,
-                                tab.PGMOVMOV_VALIND, tab.PGMOVMOV_VALORP, tab.PGMOVMOV_VALORN, tab.PGMOVMOV_TXJURD, tab.PGMOVMOV_VLJURD, tab.PGMOVMOV_MORA,
-                                tab.PGMOVMOV_VLMORA, tab.PGMOVMOV_TXDESC, tab.PGMOVMOV_VLDESC, tab.PGMOVMOV_DIASD, tab.PGMOVMOV_BCOE, tab.PGMOVMOV_AGE,
-                                tab.PGMOVMOV_BCOC, tab.PGMOVMOV_AGC, tab.PGMOVMOV_NUMCH, tab.PGMOVMOV_TARJA, tab.PGMOVMOV_TARJAN, tab.PGMOVMOV_INT_CONT,
-                                tab.PGMOVMOV_INT_BAIXA, tab.F3, tab.PGMOVMOV_NNRO, tab.PGMOVMOV_NREF, tab.PGMOVMOV_TPMOV_CNAB, tab.F4, tab.PGMOVMOV_OBS,
-                                tab.PGMOVMOV_TPFOR, tab.PGMOVMOV_SITPG, tab.PGMOVMOV_TPOP, tab.PGMOVMOV_MOD, tab.PGMOVMOV_RC, tab.PGMOVMOV_FLPRO,
-                                tab.PGMOVMOV_EXEC_C14, tab.PGMOVMOV_CLASSE_VALOR, tab.F5, tab.CHAVE_NF, tab.ITEM_PARF, tab.PGMOVMOV_PARF,
-                                tab.PGMOVMOV_CPAR, tab.PGMOVMOV_CCUSTO, tab.PGMOVMOV_TPOD, tab.PGMOVMOV_VLTAB, tab.PGMOVMOV_DTINC, tab.PGMOVMOV_DTUALT))
-                    finally:
-                        con.fechar()
-                except:
-                    logger.error("Erro de conexão com o banco de dados.")
-                    pass
+                      try: 
+                          con.executar(sql_insert_or_update_1)                                           
+                          con.efetivar()
+                      except:
+                          exc_type, exc_value, _ = sys.exc_info()
+                          logger.error(f"ERROR {exc_type} {exc_value}")
+                          logger.error(f"SQL| {sql_insert_or_update_1}")    
+                          con.rollback()
+                          logger.error("Erro ao adicionar os valores de chave: {} |PGMOVMOV_CGC: {} |PGMOVMOV_NDUPL: {} |PGMOVMOV_TPLANC: {} |PGMOVMOV_DTE: {} |PGMOVMOV_DTEM: {} |PGMOVMOV_DTV: {} |PGMOVMOV_DTN: {} |PGMOVMOV_VALOR: {} |PGMOVMOV_VALORI: {} |PGMOVMOV_PROJ: {} |PGMOVMOV_IND: {} |PGMOVMOV_VALIND: {} |PGMOVMOV_VALORP: {} |PGMOVMOV_VALORN: {} |PGMOVMOV_TXJURD: {} |PGMOVMOV_VLJURD: {} |PGMOVMOV_MORA: {} |PGMOVMOV_VLMORA: {} |PGMOVMOV_TXDESC: {} |PGMOVMOV_VLDESC: {} |PGMOVMOV_DIASD: {} |PGMOVMOV_BCOE: {} |PGMOVMOV_AGE: {} |PGMOVMOV_BCOC: {} |PGMOVMOV_AGC: {} |PGMOVMOV_NUMCH: {} |PGMOVMOV_TARJA: {} |PGMOVMOV_TARJAN: {} |PGMOVMOV_INT_CONT: {} |PGMOVMOV_INT_BAIXA: {} |F3: {} |PGMOVMOV_NNRO: {} |PGMOVMOV_NREF: {} |PGMOVMOV_TPMOV_CNAB: {} |F4: {} |PGMOVMOV_OBS: {} |PGMOVMOV_TPFOR: {} |PGMOVMOV_SITPG: {} |PGMOVMOV_TPOP: {} |PGMOVMOV_MOD: {} |PGMOVMOV_RC: {} |PGMOVMOV_FLPRO: {} |PGMOVMOV_EXEC_C14: {} |PGMOVMOV_CLASSE_VALOR: {} |F5: {} |CHAVE_NF: {} |ITEM_PARF: {} |PGMOVMOV_PARF: {} |PGMOVMOV_CPAR: {} |PGMOVMOV_CCUSTO: {} |PGMOVMOV_TPOD: {} |PGMOVMOV_VLTAB: {} |PGMOVMOV_DTINC: {} |PGMOVMOV_DTUALT: {} "
+                              .format(tab.CHAVE, tab.PGMOVMOV_CGC, tab.PGMOVMOV_NDUPL, tab.PGMOVMOV_TPLANC, tab.PGMOVMOV_DTE, tab.PGMOVMOV_DTEM,
+                                  tab.PGMOVMOV_DTV, tab.PGMOVMOV_DTN, tab.PGMOVMOV_VALOR, tab.PGMOVMOV_VALORI, tab.PGMOVMOV_PROJ, tab.PGMOVMOV_IND,
+                                  tab.PGMOVMOV_VALIND, tab.PGMOVMOV_VALORP, tab.PGMOVMOV_VALORN, tab.PGMOVMOV_TXJURD, tab.PGMOVMOV_VLJURD, tab.PGMOVMOV_MORA,
+                                  tab.PGMOVMOV_VLMORA, tab.PGMOVMOV_TXDESC, tab.PGMOVMOV_VLDESC, tab.PGMOVMOV_DIASD, tab.PGMOVMOV_BCOE, tab.PGMOVMOV_AGE,
+                                  tab.PGMOVMOV_BCOC, tab.PGMOVMOV_AGC, tab.PGMOVMOV_NUMCH, tab.PGMOVMOV_TARJA, tab.PGMOVMOV_TARJAN, tab.PGMOVMOV_INT_CONT,
+                                  tab.PGMOVMOV_INT_BAIXA, tab.F3, tab.PGMOVMOV_NNRO, tab.PGMOVMOV_NREF, tab.PGMOVMOV_TPMOV_CNAB, tab.F4, tab.PGMOVMOV_OBS,
+                                  tab.PGMOVMOV_TPFOR, tab.PGMOVMOV_SITPG, tab.PGMOVMOV_TPOP, tab.PGMOVMOV_MOD, tab.PGMOVMOV_RC, tab.PGMOVMOV_FLPRO,
+                                  tab.PGMOVMOV_EXEC_C14, tab.PGMOVMOV_CLASSE_VALOR, tab.F5, tab.CHAVE_NF, tab.ITEM_PARF, tab.PGMOVMOV_PARF,
+                                  tab.PGMOVMOV_CPAR, tab.PGMOVMOV_CCUSTO, tab.PGMOVMOV_TPOD, tab.PGMOVMOV_VLTAB, tab.PGMOVMOV_DTINC, tab.PGMOVMOV_DTUALT))
+                      finally:
+                          con.fechar()
+                  except:
+                      logger.error("Erro de conexão com o banco de dados.")
+                      pass
                 
 
                 def update_dados(x):
-                  sql = "UPDATE {TABLE_OWNER}.{TABLE_NAME} SET"
-                  sql += ' PGMOVMOV_DTE=cast_tipo(tab.PGMOVMOV_DTE)' if x['PGMOVMOV_DTE'] != tab.PGMOVMOV_DTE else '' 
-                  sql += ' PGMOVMOV_DTEM=cast_tipo(tab.PGMOVMOV_DTEM)' if x['PGMOVMOV_DTEM'] != tab.PGMOVMOV_DTEM else '' 
-                  sql += ' PGMOVMOV_DTV=cast_tipo(tab.PGMOVMOV_DTV)' if x['PGMOVMOV_DTV'] != tab.PGMOVMOV_DTV else '' 
-                  sql += ' PGMOVMOV_DTN=cast_tipo(tab.PGMOVMOV_DTN)' if x['PGMOVMOV_DTN'] != tab.PGMOVMOV_DTN else '' 
-                  sql += ' PGMOVMOV_VALOR=cast_tipo(tab.PGMOVMOV_VALOR)' if x['PGMOVMOV_VALOR'] != tab.PGMOVMOV_VALOR else '' 
-                  sql += ' PGMOVMOV_VALORI=cast_tipo(tab.PGMOVMOV_VALORI)' if x['PGMOVMOV_VALORI'] != tab.PGMOVMOV_VALORI else '' 
-                  sql += ' PGMOVMOV_PROJ=cast_tipo(tab.PGMOVMOV_PROJ)' if x['PGMOVMOV_PROJ'] != tab.PGMOVMOV_PROJ else '' 
-                  sql += ' PGMOVMOV_IND=cast_tipo(tab.PGMOVMOV_IND)' if x['PGMOVMOV_IND'] != tab.PGMOVMOV_IND else '' 
-                  sql += ' PGMOVMOV_VALIND=cast_tipo(tab.PGMOVMOV_VALIND)' if x['PGMOVMOV_VALIND'] != tab.PGMOVMOV_VALIND else '' 
-                  sql += ' PGMOVMOV_VALORP=cast_tipo(tab.PGMOVMOV_VALORP)' if x['PGMOVMOV_VALORP'] != tab.PGMOVMOV_VALORP else '' 
-                  sql += ' PGMOVMOV_VALORN=cast_tipo(tab.PGMOVMOV_VALORN)' if x['PGMOVMOV_VALORN'] != tab.PGMOVMOV_VALORN else '' 
-                  sql += ' PGMOVMOV_TXJURD=cast_tipo(tab.PGMOVMOV_TXJURD)' if x['PGMOVMOV_TXJURD'] != tab.PGMOVMOV_TXJURD else '' 
-                  sql += ' PGMOVMOV_VLJURD=cast_tipo(tab.PGMOVMOV_VLJURD)' if x['PGMOVMOV_VLJURD'] != tab.PGMOVMOV_VLJURD else '' 
-                  sql += ' PGMOVMOV_MORA=cast_tipo(tab.PGMOVMOV_MORA)' if x['PGMOVMOV_MORA'] != tab.PGMOVMOV_MORA else '' 
-                  sql += ' PGMOVMOV_VLMORA=cast_tipo(tab.PGMOVMOV_VLMORA)' if x['PGMOVMOV_VLMORA'] != tab.PGMOVMOV_VLMORA else '' 
-                  sql += ' PGMOVMOV_TXDESC=cast_tipo(tab.PGMOVMOV_TXDESC)' if x['PGMOVMOV_TXDESC'] != tab.PGMOVMOV_TXDESC else '' 
-                  sql += ' PGMOVMOV_VLDESC=cast_tipo(tab.PGMOVMOV_VLDESC)' if x['PGMOVMOV_VLDESC'] != tab.PGMOVMOV_VLDESC else '' 
-                  sql += ' PGMOVMOV_DIASD=cast_tipo(tab.PGMOVMOV_DIASD)' if x['PGMOVMOV_DIASD'] != tab.PGMOVMOV_DIASD else '' 
-                  sql += ' PGMOVMOV_BCOE=cast_tipo(tab.PGMOVMOV_BCOE)' if x['PGMOVMOV_BCOE'] != tab.PGMOVMOV_BCOE else '' 
-                  sql += ' PGMOVMOV_AGE=cast_tipo(tab.PGMOVMOV_AGE)' if x['PGMOVMOV_AGE'] != tab.PGMOVMOV_AGE else '' 
-                  sql += ' PGMOVMOV_BCOC=cast_tipo(tab.PGMOVMOV_BCOC)' if x['PGMOVMOV_BCOC'] != tab.PGMOVMOV_BCOC else '' 
-                  sql += ' PGMOVMOV_AGC=cast_tipo(tab.PGMOVMOV_AGC)' if x['PGMOVMOV_AGC'] != tab.PGMOVMOV_AGC else '' 
-                  sql += ' PGMOVMOV_NUMCH=cast_tipo(tab.PGMOVMOV_NUMCH)' if x['PGMOVMOV_NUMCH'] != tab.PGMOVMOV_NUMCH else '' 
-                  sql += ' PGMOVMOV_TARJA=cast_tipo(tab.PGMOVMOV_TARJA)' if x['PGMOVMOV_TARJA'] != tab.PGMOVMOV_TARJA else '' 
-                  sql += ' PGMOVMOV_TARJAN=cast_tipo(tab.PGMOVMOV_TARJAN)' if x['PGMOVMOV_TARJAN'] != tab.PGMOVMOV_TARJAN else '' 
-                  sql += ' PGMOVMOV_INT_CONT=cast_tipo(tab.PGMOVMOV_INT_CONT)' if x['PGMOVMOV_INT_CONT'] != tab.PGMOVMOV_INT_CONT else '' 
-                  sql += ' PGMOVMOV_INT_BAIXA=cast_tipo(tab.PGMOVMOV_INT_BAIXA)' if x['PGMOVMOV_INT_BAIXA'] != tab.PGMOVMOV_INT_BAIXA else '' 
-                  sql += ' PGMOVMOV_NNRO=cast_tipo(tab.PGMOVMOV_NNRO)' if x['PGMOVMOV_NNRO'] != tab.PGMOVMOV_NNRO else '' 
-                  sql += ' PGMOVMOV_NREF=cast_tipo(tab.PGMOVMOV_NREF)' if x['PGMOVMOV_NREF'] != tab.PGMOVMOV_NREF else '' 
-                  sql += ' PGMOVMOV_TPMOV_CNAB=cast_tipo(tab.PGMOVMOV_TPMOV_CNAB)' if x['PGMOVMOV_TPMOV_CNAB'] != tab.PGMOVMOV_TPMOV_CNAB else '' 
-                  sql += ' PGMOVMOV_OBS=cast_tipo(tab.PGMOVMOV_OBS)' if x['PGMOVMOV_OBS'] != tab.PGMOVMOV_OBS else '' 
-                  sql += ' PGMOVMOV_TPFOR=cast_tipo(tab.PGMOVMOV_TPFOR)' if x['PGMOVMOV_TPFOR'] != tab.PGMOVMOV_TPFOR else '' 
-                  sql += ' PGMOVMOV_SITPG=cast_tipo(tab.PGMOVMOV_SITPG)' if x['PGMOVMOV_SITPG'] != tab.PGMOVMOV_SITPG else '' 
-                  sql += ' PGMOVMOV_TPOP=cast_tipo(tab.PGMOVMOV_TPOP)' if x['PGMOVMOV_TPOP'] != tab.PGMOVMOV_TPOP else '' 
-                  sql += ' PGMOVMOV_MOD=cast_tipo(tab.PGMOVMOV_MOD)' if x['PGMOVMOV_MOD'] != tab.PGMOVMOV_MOD else '' 
-                  sql += ' PGMOVMOV_RC=cast_tipo(tab.PGMOVMOV_RC)' if x['PGMOVMOV_RC'] != tab.PGMOVMOV_RC else '' 
-                  sql += ' PGMOVMOV_FLPRO=cast_tipo(tab.PGMOVMOV_FLPRO)' if x['PGMOVMOV_FLPRO'] != tab.PGMOVMOV_FLPRO else '' 
-                  sql += ' PGMOVMOV_CLASSE_VALOR=cast_tipo(tab.PGMOVMOV_CLASSE_VALOR)' if x['PGMOVMOV_CLASSE_VALOR'] != tab.PGMOVMOV_CLASSE_VALOR else '' 
-                  sql += ' PGMOVMOV_USU=cast_tipo(tab.PGMOVMOV_USU)' if x['PGMOVMOV_USU'] != tab.PGMOVMOV_USU else '' 
-                  sql += ' PGMOVMOV_TIME=cast_tipo(tab.PGMOVMOV_TIME)' if x['PGMOVMOV_TIME'] != tab.PGMOVMOV_TIME else '' 
-                  sql += ' PGMOVMOV_DTS=cast_tipo(tab.PGMOVMOV_DTS)' if x['PGMOVMOV_DTS'] != tab.PGMOVMOV_DTS else '' 
-                  sql += f" WHERE PGMOVMOV_CGC == {tab.PGMOVMOV_CGC} & PGMOVMOV_NDUPL == '{tab.PGMOVMOV_NDUPL}'"
-
+                  sql = f"UPDATE {TABLE_OWNER}.{TABLE1} SET"
+                  sql += f' PGMOVMOV_DTE={cast_tipo(tab.PGMOVMOV_DTE)}' if x.PGMOVMOV_DTE != tab.PGMOVMOV_DTE else '' 
+                  sql += f', PGMOVMOV_DTEM={cast_tipo(tab.PGMOVMOV_DTEM)}' if x.PGMOVMOV_DTEM != tab.PGMOVMOV_DTEM else '' 
+                  sql += f', PGMOVMOV_DTV={cast_tipo(tab.PGMOVMOV_DTV)}' if x.PGMOVMOV_DTV != tab.PGMOVMOV_DTV else '' 
+                  sql += f', PGMOVMOV_DTN={cast_tipo(tab.PGMOVMOV_DTN)}' if x.PGMOVMOV_DTN != tab.PGMOVMOV_DTN else '' 
+                  sql += f', PGMOVMOV_VALOR={cast_tipo(tab.PGMOVMOV_VALOR)}' if x.PGMOVMOV_VALOR != tab.PGMOVMOV_VALOR else '' 
+                  sql += f', PGMOVMOV_VALORI={cast_tipo(tab.PGMOVMOV_VALORI)}' if x.PGMOVMOV_VALORI != tab.PGMOVMOV_VALORI else '' 
+                  sql += f', PGMOVMOV_PROJ={cast_tipo(tab.PGMOVMOV_PROJ)}' if x.PGMOVMOV_PROJ != tab.PGMOVMOV_PROJ else '' 
+                  sql += f', PGMOVMOV_IND={cast_tipo(tab.PGMOVMOV_IND)}' if x.PGMOVMOV_IND != tab.PGMOVMOV_IND else '' 
+                  sql += f', PGMOVMOV_VALIND={cast_tipo(tab.PGMOVMOV_VALIND)}' if x.PGMOVMOV_VALIND != tab.PGMOVMOV_VALIND else '' 
+                  sql += f', PGMOVMOV_VALORP={cast_tipo(tab.PGMOVMOV_VALORP)}' if x.PGMOVMOV_VALORP != tab.PGMOVMOV_VALORP else '' 
+                  sql += f', PGMOVMOV_VALORN={cast_tipo(tab.PGMOVMOV_VALORN)}' if x.PGMOVMOV_VALORN != tab.PGMOVMOV_VALORN else '' 
+                  sql += f', PGMOVMOV_TXJURD={cast_tipo(tab.PGMOVMOV_TXJURD)}' if x.PGMOVMOV_TXJURD != tab.PGMOVMOV_TXJURD else '' 
+                  sql += f', PGMOVMOV_VLJURD={cast_tipo(tab.PGMOVMOV_VLJURD)}' if x.PGMOVMOV_VLJURD != tab.PGMOVMOV_VLJURD else '' 
+                  sql += f', PGMOVMOV_MORA={cast_tipo(tab.PGMOVMOV_MORA)}' if x.PGMOVMOV_MORA != tab.PGMOVMOV_MORA else '' 
+                  sql += f', PGMOVMOV_VLMORA={cast_tipo(tab.PGMOVMOV_VLMORA)}' if x.PGMOVMOV_VLMORA != tab.PGMOVMOV_VLMORA else '' 
+                  sql += f', PGMOVMOV_TXDESC={cast_tipo(tab.PGMOVMOV_TXDESC)}' if x.PGMOVMOV_TXDESC != tab.PGMOVMOV_TXDESC else '' 
+                  sql += f', PGMOVMOV_VLDESC={cast_tipo(tab.PGMOVMOV_VLDESC)}' if x.PGMOVMOV_VLDESC != tab.PGMOVMOV_VLDESC else '' 
+                  sql += f', PGMOVMOV_DIASD={cast_tipo(tab.PGMOVMOV_DIASD)}' if x.PGMOVMOV_DIASD != tab.PGMOVMOV_DIASD else '' 
+                  sql += f', PGMOVMOV_BCOE={cast_tipo(tab.PGMOVMOV_BCOE)}' if x.PGMOVMOV_BCOE != tab.PGMOVMOV_BCOE else '' 
+                  sql += f', PGMOVMOV_AGE={cast_tipo(tab.PGMOVMOV_AGE)}' if x.PGMOVMOV_AGE.strip() != tab.PGMOVMOV_AGE else '' 
+                  sql += f', PGMOVMOV_BCOC={cast_tipo(tab.PGMOVMOV_BCOC)}' if x.PGMOVMOV_BCOC != tab.PGMOVMOV_BCOC else '' 
+                  sql += f', PGMOVMOV_AGC={cast_tipo(tab.PGMOVMOV_AGC)}' if x.PGMOVMOV_AGC.strip() != tab.PGMOVMOV_AGC else '' 
+                  sql += f', PGMOVMOV_NUMCH={cast_tipo(tab.PGMOVMOV_NUMCH)}' if x.PGMOVMOV_NUMCH.strip() != tab.PGMOVMOV_NUMCH else '' 
+                  sql += f', PGMOVMOV_TARJA={cast_tipo(tab.PGMOVMOV_TARJA)}' if x.PGMOVMOV_TARJA.strip() != tab.PGMOVMOV_TARJA else '' 
+                  sql += f', PGMOVMOV_TARJAN={cast_tipo(tab.PGMOVMOV_TARJAN)}' if x.PGMOVMOV_TARJAN.strip() != tab.PGMOVMOV_TARJAN else '' 
+                  sql += f', PGMOVMOV_INT_CONT={cast_tipo(tab.PGMOVMOV_INT_CONT)}' if x.PGMOVMOV_INT_CONT != tab.PGMOVMOV_INT_CONT else '' 
+                  sql += f', PGMOVMOV_INT_BAIXA={cast_tipo(tab.PGMOVMOV_INT_BAIXA)}' if x.PGMOVMOV_INT_BAIXA != tab.PGMOVMOV_INT_BAIXA else '' 
+                  sql += f', PGMOVMOV_NNRO={cast_tipo(tab.PGMOVMOV_NNRO)}' if x.PGMOVMOV_NNRO.strip() != tab.PGMOVMOV_NNRO else '' 
+                  sql += f', PGMOVMOV_NREF={cast_tipo(tab.PGMOVMOV_NREF)}' if x.PGMOVMOV_NREF.strip() != tab.PGMOVMOV_NREF else '' 
+                  sql += f', PGMOVMOV_TPMOV_CNAB={cast_tipo(tab.PGMOVMOV_TPMOV_CNAB)}' if x.PGMOVMOV_TPMOV_CNAB != tab.PGMOVMOV_TPMOV_CNAB else '' 
+                  sql += f', PGMOVMOV_OBS={cast_tipo(tab.PGMOVMOV_OBS)}' if x.PGMOVMOV_OBS.strip() != tab.PGMOVMOV_OBS else '' 
+                  sql += f', PGMOVMOV_TPFOR={cast_tipo(tab.PGMOVMOV_TPFOR)}' if x.PGMOVMOV_TPFOR != tab.PGMOVMOV_TPFOR else '' 
+                  sql += f', PGMOVMOV_SITPG={cast_tipo(tab.PGMOVMOV_SITPG)}' if x.PGMOVMOV_SITPG != tab.PGMOVMOV_SITPG else '' 
+                  sql += f', PGMOVMOV_TPOP={cast_tipo(tab.PGMOVMOV_TPOP)}' if x.PGMOVMOV_TPOP != tab.PGMOVMOV_TPOP else '' 
+                  sql += f', PGMOVMOV_MOD={cast_tipo(tab.PGMOVMOV_MOD)}' if x.PGMOVMOV_MOD != tab.PGMOVMOV_MOD else '' 
+                  sql += f', PGMOVMOV_RC={cast_tipo(tab.PGMOVMOV_RC)}' if x.PGMOVMOV_RC != tab.PGMOVMOV_RC else '' 
+                  sql += f', PGMOVMOV_FLPRO={cast_tipo(tab.PGMOVMOV_FLPRO)}' if x.PGMOVMOV_FLPRO.strip() != tab.PGMOVMOV_FLPRO else '' 
+                  sql += f', PGMOVMOV_CLASSE_VALOR={cast_tipo(tab.PGMOVMOV_CLASSE_VALOR)}' if x.PGMOVMOV_CLASSE_VALOR != tab.PGMOVMOV_CLASSE_VALOR else '' 
+                  sql += f', PGMOVMOV_PARF_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_PARF)}' if x[f"PGMOVMOV_PARF_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_PARF else '' 
+                  sql += f', PGMOVMOV_CPAR_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_CPAR)}' if x[f"PGMOVMOV_CPAR_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_CPAR else '' 
+                  sql += f', PGMOVMOV_CCUSTO_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_CCUSTO)}' if x[f"PGMOVMOV_CCUSTO_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_CCUSTO else '' 
+                  sql += f', PGMOVMOV_TPOD_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_TPOD)}' if x[f"PGMOVMOV_TPOD_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_TPOD else '' 
+                  sql += f', PGMOVMOV_VLTAB_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_VLTAB)}' if x[f"PGMOVMOV_VLTAB_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_VLTAB else '' 
+                  sql += f', PGMOVMOV_USU={cast_tipo(tab.PGMOVMOV_USU)}' if x.PGMOVMOV_USU != tab.PGMOVMOV_USU else '' 
+                  sql += f', PGMOVMOV_TIME={cast_tipo(tab.PGMOVMOV_TIME)}' if x.PGMOVMOV_TIME != tab.PGMOVMOV_TIME else '' 
+                  sql += f', PGMOVMOV_DTS={cast_tipo(tab.PGMOVMOV_DTS)}' if x.PGMOVMOV_DTS != tab.PGMOVMOV_DTS else ''
+                  sql += f" WHERE PGMOVMOV_CGC = {tab.PGMOVMOV_CGC} and PGMOVMOV_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
+                  sql = sql.replace("SET,", "SET")
                   try:
                     con = conexao_dbmaker(10, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
 
                     try: 
-                        con.executar(sql_insert_or_update_1)                                           
+                        con.executar(sql)                                           
                         con.efetivar()
                     except:
                         exc_type, exc_value, _ = sys.exc_info()
                         logger.error(f"ERROR {exc_type} {exc_value}")
-                        logger.error(f"SQL| {sql_insert_or_update_1}")    
+                        logger.error(f"SQL| {sql}")    
                         con.rollback()
                     finally:
                         con.fechar()
@@ -486,8 +490,7 @@ while True:
                     logger.error("Erro de conexão com o banco de dados.")
                     pass
 
-                RECPGM.query(f"PGMOVMOV_CGC == {tab.PGMOVMOV_CGC} & PGMOVMOV_NDUPL == '{tab.PGMOVMOV_NDUPL}'").apply(update_dados)
-
+                RECPGM.query(f"PGMOVMOV_CGC == {tab.PGMOVMOV_CGC} & PGMOVMOV_NDUPL == '{tab.PGMOVMOV_NDUPL}'").apply(update_dados, axis=1)
 
                 
     except KeyboardInterrupt:
