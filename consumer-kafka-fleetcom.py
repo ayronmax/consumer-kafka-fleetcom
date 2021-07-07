@@ -314,8 +314,8 @@ consumer_conf = {'bootstrap.servers': '189.2.113.196:19091,189.2.113.196:29092,1
                  'key.deserializer': string_deserializer,
                  'value.deserializer': avro_deserializer,
                  'group.id': 'fleetcom-2792',
-                 'auto.offset.reset': 'earliest'}
-#latest
+                 'auto.offset.reset': 'latest'}
+#latest | earliest
 consumer = DeserializingConsumer(consumer_conf)
 consumer.subscribe([topic])
 logger = log(f"kafka-consumer", 10, 10, "w", 4, 0)
@@ -326,7 +326,6 @@ while True:
         msg = consumer.poll(1)
 
         if msg is None:
-            print("sem dados")
             continue
         elif msg.error():
             logger.error('error: {}'.format(msg.error()))
@@ -406,16 +405,8 @@ while True:
                           logger.error(f"ERROR {exc_type} {exc_value}")
                           logger.error(f"SQL| {sql_insert_or_update_1}")    
                           con.rollback()
-                          logger.error("Erro ao adicionar os valores de chave: {} |PGMOVMOV_CGC: {} |PGMOVMOV_NDUPL: {} |PGMOVMOV_TPLANC: {} |PGMOVMOV_DTE: {} |PGMOVMOV_DTEM: {} |PGMOVMOV_DTV: {} |PGMOVMOV_DTN: {} |PGMOVMOV_VALOR: {} |PGMOVMOV_VALORI: {} |PGMOVMOV_PROJ: {} |PGMOVMOV_IND: {} |PGMOVMOV_VALIND: {} |PGMOVMOV_VALORP: {} |PGMOVMOV_VALORN: {} |PGMOVMOV_TXJURD: {} |PGMOVMOV_VLJURD: {} |PGMOVMOV_MORA: {} |PGMOVMOV_VLMORA: {} |PGMOVMOV_TXDESC: {} |PGMOVMOV_VLDESC: {} |PGMOVMOV_DIASD: {} |PGMOVMOV_BCOE: {} |PGMOVMOV_AGE: {} |PGMOVMOV_BCOC: {} |PGMOVMOV_AGC: {} |PGMOVMOV_NUMCH: {} |PGMOVMOV_TARJA: {} |PGMOVMOV_TARJAN: {} |PGMOVMOV_INT_CONT: {} |PGMOVMOV_INT_BAIXA: {} |F3: {} |PGMOVMOV_NNRO: {} |PGMOVMOV_NREF: {} |PGMOVMOV_TPMOV_CNAB: {} |F4: {} |PGMOVMOV_OBS: {} |PGMOVMOV_TPFOR: {} |PGMOVMOV_SITPG: {} |PGMOVMOV_TPOP: {} |PGMOVMOV_MOD: {} |PGMOVMOV_RC: {} |PGMOVMOV_FLPRO: {} |PGMOVMOV_EXEC_C14: {} |PGMOVMOV_CLASSE_VALOR: {} |F5: {} |CHAVE_NF: {} |ITEM_PARF: {} |PGMOVMOV_PARF: {} |PGMOVMOV_CPAR: {} |PGMOVMOV_CCUSTO: {} |PGMOVMOV_TPOD: {} |PGMOVMOV_VLTAB: {} |PGMOVMOV_DTINC: {} |PGMOVMOV_DTUALT: {} "
-                              .format(tab.CHAVE, tab.PGMOVMOV_CGC, tab.PGMOVMOV_NDUPL, tab.PGMOVMOV_TPLANC, tab.PGMOVMOV_DTE, tab.PGMOVMOV_DTEM,
-                                  tab.PGMOVMOV_DTV, tab.PGMOVMOV_DTN, tab.PGMOVMOV_VALOR, tab.PGMOVMOV_VALORI, tab.PGMOVMOV_PROJ, tab.PGMOVMOV_IND,
-                                  tab.PGMOVMOV_VALIND, tab.PGMOVMOV_VALORP, tab.PGMOVMOV_VALORN, tab.PGMOVMOV_TXJURD, tab.PGMOVMOV_VLJURD, tab.PGMOVMOV_MORA,
-                                  tab.PGMOVMOV_VLMORA, tab.PGMOVMOV_TXDESC, tab.PGMOVMOV_VLDESC, tab.PGMOVMOV_DIASD, tab.PGMOVMOV_BCOE, tab.PGMOVMOV_AGE,
-                                  tab.PGMOVMOV_BCOC, tab.PGMOVMOV_AGC, tab.PGMOVMOV_NUMCH, tab.PGMOVMOV_TARJA, tab.PGMOVMOV_TARJAN, tab.PGMOVMOV_INT_CONT,
-                                  tab.PGMOVMOV_INT_BAIXA, tab.F3, tab.PGMOVMOV_NNRO, tab.PGMOVMOV_NREF, tab.PGMOVMOV_TPMOV_CNAB, tab.F4, tab.PGMOVMOV_OBS,
-                                  tab.PGMOVMOV_TPFOR, tab.PGMOVMOV_SITPG, tab.PGMOVMOV_TPOP, tab.PGMOVMOV_MOD, tab.PGMOVMOV_RC, tab.PGMOVMOV_FLPRO,
-                                  tab.PGMOVMOV_EXEC_C14, tab.PGMOVMOV_CLASSE_VALOR, tab.F5, tab.CHAVE_NF, tab.ITEM_PARF, tab.PGMOVMOV_PARF,
-                                  tab.PGMOVMOV_CPAR, tab.PGMOVMOV_CCUSTO, tab.PGMOVMOV_TPOD, tab.PGMOVMOV_VLTAB, tab.PGMOVMOV_DTINC, tab.PGMOVMOV_DTUALT))
+                          logger.error("Erro ao adicionar os valores de chave: {} |PGMOVMOV_CGC: {} |PGMOVMOV_NDUPL: {} "
+                              .format(tab.PGMOVMOV_CGC, tab.PGMOVMOV_NDUPL))
                       finally:
                           con.fechar()
                   except:
@@ -468,11 +459,13 @@ while True:
                   sql += f', PGMOVMOV_CCUSTO_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_CCUSTO)}' if x[f"PGMOVMOV_CCUSTO_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_CCUSTO else '' 
                   sql += f', PGMOVMOV_TPOD_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_TPOD)}' if x[f"PGMOVMOV_TPOD_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_TPOD else '' 
                   sql += f', PGMOVMOV_VLTAB_{tab.ITEM_RATEIO}={cast_tipo(tab.PGMOVMOV_VLTAB)}' if x[f"PGMOVMOV_VLTAB_{tab.ITEM_RATEIO}"] != tab.PGMOVMOV_VLTAB else '' 
-                  sql += f', PGMOVMOV_USU={cast_tipo(tab.PGMOVMOV_USU)}' if x.PGMOVMOV_USU != tab.PGMOVMOV_USU else '' 
-                  sql += f', PGMOVMOV_TIME={cast_tipo(tab.PGMOVMOV_TIME)}' if x.PGMOVMOV_TIME != tab.PGMOVMOV_TIME else '' 
-                  sql += f', PGMOVMOV_DTS={cast_tipo(tab.PGMOVMOV_DTS)}' if x.PGMOVMOV_DTS != tab.PGMOVMOV_DTS else ''
+                  
+                  if not 'PGMOVMOV' in sql:
+                    return
+
                   sql += f" WHERE PGMOVMOV_CGC = {tab.PGMOVMOV_CGC} and PGMOVMOV_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
                   sql = sql.replace("SET,", "SET")
+
                   try:
                     con = conexao_dbmaker(10, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
 
