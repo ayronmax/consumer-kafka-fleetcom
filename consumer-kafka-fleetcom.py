@@ -334,14 +334,14 @@ while True:
             if tab is not None:
                 __USER_DBMAKER = "SYSADM"
                 __PASS_DBMAKER = "K5GhnHEr"
-                __DB = 'DBCONTROL_6506_006'
-                TABLE_OWNER, TABLE1, TABLE2 = 'DBCONTROL6506006', 'RECPGM06', 'RECPGB06'
+                __DB = 'DBCONTROL_2792_001'
+                TABLE_OWNER, TABLE1, TABLE2 = 'DBCONTROL2792001',  'RECPGM01', 'RECPGB01'
 
                 sql = f"select * from {TABLE_OWNER}.{TABLE1} where PGMOVMOV_CGC = {tab.PGMOVMOV_CGC} and PGMOVMOV_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
                 
                 try:
                     con = conexao_dbmaker(10, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
-
+                    resultado = False
                     try:
                         RECPGM = pd.read_sql_query(sql, con)
                         resultado = True
@@ -354,14 +354,16 @@ while True:
                             con.fechar()
                 except:
                     raise
-                    
+                
+                  
                 sql = f"select * from {TABLE_OWNER}.{TABLE2} where PGMOVBAI_CGC = {tab.PGMOVMOV_CGC} and PGMOVBAI_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
 
                 try:
                     con = conexao_dbmaker(10, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
-
+                    resultado = False
                     try:
                         RECPGB = pd.read_sql_query(sql, con)
+                        resultado = True
                     except:
                         RECPGB = pd.DataFrame()
                     finally:
