@@ -323,7 +323,14 @@ logger = log(f"kafka-consumer", 10, 10, "w", 4, 0)
 while True:
     try:
         # SIGINT can't be handled when polling, limit timeout to 1 second.
-        msg = consumer.poll(1)
+        try:
+            msg = consumer.poll(0.2)
+        except Exception as e:
+            if "Application maximum poll interval" in e:
+                print(e)
+                pass
+            else:
+                raise
 
         if msg is None:
             continue
