@@ -310,11 +310,14 @@ schema_registry_client = SchemaRegistryClient(sr_conf)
 avro_deserializer = AvroDeserializer(schema_registry_client, schema_str, dict_to_tab)
 string_deserializer = StringDeserializer('utf_8')
 
+
 consumer_conf = {'bootstrap.servers': '189.2.113.196:19091,189.2.113.196:29092,189.2.113.196:39093',
                  'key.deserializer': string_deserializer,
                  'value.deserializer': avro_deserializer,
                  'group.id': 'fleetcom-2792',
-                 'auto.offset.reset': 'latest'}
+                 'auto.offset.reset': 'latest',
+                 'session.timeout.ms': 60000,
+                 'max.poll.interval.ms': 60000}
 #latest | earliest
 consumer = DeserializingConsumer(consumer_conf)
 consumer.subscribe([topic])
@@ -322,15 +325,10 @@ logger = log(f"kafka-consumer", 10, 10, "w", 4, 0)
 
 while True:
     try:
-        # SIGINT can't be handled when polling, limit timeout to 1 second.
         try:
-            msg = consumer.poll(0.2)
+            msg = consumer.poll(timeout=1.0)
         except Exception as e:
-            if "Application maximum poll interval" in e:
-                print(e)
-                pass
-            else:
-                raise
+            logger.error('error: {}'.format(e))
 
         if msg is None:
             continue
@@ -341,13 +339,14 @@ while True:
             if tab is not None:
                 __USER_DBMAKER = "SYSADM"
                 __PASS_DBMAKER = "K5GhnHEr"
-                __DB = 'DBCONTROL_2792_001'
-                TABLE_OWNER, TABLE1, TABLE2 = 'DBCONTROL2792001',  'RECPGM01', 'RECPGB01'
+                __DB = 'DBCONTROL_6506_006'
+                __CONEXAO_TESTE = 1
+                TABLE_OWNER, TABLE1, TABLE2 = 'DBCONTROL6506006',  'RECPGM06', 'RECPGB06'
 
                 sql = f"select * from {TABLE_OWNER}.{TABLE1} where PGMOVMOV_CGC = {tab.PGMOVMOV_CGC} and PGMOVMOV_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
                 
                 try:
-                    con = conexao_dbmaker(0, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
+                    con = conexao_dbmaker(__CONEXAO_TESTE, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
                     resultado = False
                     try:
                         RECPGM = pd.read_sql_query(sql, con)
@@ -366,7 +365,7 @@ while True:
                 sql = f"select * from {TABLE_OWNER}.{TABLE2} where PGMOVBAI_CGC = {tab.PGMOVMOV_CGC} and PGMOVBAI_NDUPL = '{tab.PGMOVMOV_NDUPL}'"
 
                 try:
-                    con = conexao_dbmaker(0, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
+                    con = conexao_dbmaker(__CONEXAO_TESTE, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
                     resultado = False
                     try:
                         RECPGB = pd.read_sql_query(sql, con)
@@ -404,7 +403,7 @@ while True:
                 
                 if sql_insert_or_update_1 != "":
                   try:
-                      con = conexao_dbmaker(0, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
+                      con = conexao_dbmaker(__CONEXAO_TESTE, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
 
                       try: 
                           con.executar(sql_insert_or_update_1)                                           
@@ -476,7 +475,7 @@ while True:
                   sql = sql.replace("SET,", "SET")
 
                   try:
-                    con = conexao_dbmaker(0, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
+                    con = conexao_dbmaker(__CONEXAO_TESTE, __DB, __USER_DBMAKER, __PASS_DBMAKER).conectar()
 
                     try: 
                         con.executar(sql)                                           
